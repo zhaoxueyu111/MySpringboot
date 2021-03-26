@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--添加bootstrap的css文件-->
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <!--添加jQuery文件-->
+    <script src="../js/jquery-3.1.1.min.js"></script>
+    <!--添加bootstrap的js文件-->
+    <script src="../js/bootstrap.js"></script>
+    <!-- 添加bootbox的js文件 -->
+    <script src="../js/bootbox.min.js"></script>
+
+    <title>通知详情</title>
+    <script>
+        $(function(){
+            noticeId = localStorage.getItem('noticeId') ;
+            // 获取到数据后销毁存储记录
+            localStorage.removeItem('noticeId') ;
+            if(noticeId == null || noticeId == '' || noticeId < 1) {
+                 bootbox.alert('无法显示通知!<a href="../index.html">主页</a>') ;
+            } else {
+                $.post(
+                    'http://localhost:8080/notice/getByid' ,
+                    'id=' + noticeId ,
+                    function(resData) {
+                        $('#noticeTitle').html(resData.title) ;
+                        $('#noticeContent').html(resData.content) ;
+                        $('#noticeDt').html(resData.pubdatetime) ;
+
+                    }
+                )
+            }
+
+        })
+    </script>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="thumbnail">
+                    <div class="caption">
+                        <h3 id="noticeTitle">Thumbnail label</h3>
+                        <p id="noticeContent">...</p>
+                        <p id="noticeDt">111</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

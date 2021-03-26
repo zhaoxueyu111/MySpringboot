@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--添加bootstrap的css文件-->
+    <link rel="stylesheet" href="../css/bootstrap.css">
+    <!--添加jQuery文件-->
+    <script src="../js/jquery-3.1.1.min.js"></script>
+    <!--添加bootstrap的js文件-->
+    <script src="../js/bootstrap.js"></script>
+    <!-- 添加bootbox的js文件 -->
+    <script src="../js/bootbox.min.js"></script>
+    <!-- 添加bootstrap-table所需要的css和js -->
+    <link rel="stylesheet" href="../css/bootstrap-table.css">
+    <script src="../js/bootstrap-table.js"></script>
+    <script src="../js/bootstrap-table-zh-CN.js"></script>
+    <title>物业设备管理</title>
+</head>
+    <script>
+    // 如 ：行最后列自定义显示
+    function operateFormatter(value, row, index) {
+
+        var update = '<button  type="button" class="edit btn btn-xs btn-info"' +
+            '<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>修改' +
+            '</button>&nbsp;&nbsp;';
+
+        var del = '<button  type="button" class="remove btn btn-xs btn-danger"' +
+            '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除' +
+            '</button>';
+        return update + del;
+    }
+
+    window.operateEvents = {
+
+        'click .edit' : function(e , value , row , index) {
+            $("#editWindow").modal('show') ;
+            $("#edit_did").val(row.did) ;
+            $("#edit_ddevice").val(row.ddevice) ;
+            $("#edit_dnumber").html(row.dnumber) ;
+            $("#edit_dprice").val(row.dprice) ;
+
+            $("#editResetBtn").click(function () {
+                $("#editForm")[0].reset();
+                $("#editWindow").modal('hide') ;
+            });
+
+            $("#editSubmitBtn").click(function () {
+                $.post(
+                    'http://localhost:8080/device/update' ,
+                    $("#editForm").serialize() ,
+                    function(resData){
+                        if("true" == resData) {
+                            $("#editWindow").modal('hide') ;
+                            bootbox.alert('更新成功!') ;
+                            $("#deviceTable").bootstrapTable('refresh') ;
+                        } else {
+                            $("#editWindow").modal('hide') ;
+                            bootbox.alert('更新失败！') ;
+                        }
+
+                    }
+                );
+            });
+        } ,
+
+
+        // click表示绑定click动作，   .edit 表示为class是edit的元素绑定事件 【注意中间的空格】
+        'click .remove' : function(e , value , row , index) {
+            bootbox.confirm("确认删除: " + row.ddevice + " ?" , function(result){
+                if(result) {
+                    // ajax 提交到服务器端进行删除
+                    $.post(
+                        'http://localhost:8080/device/deleteOne' ,
+                        'deleteDid=' + row.did ,
+                        function(resData) {
+                            if(resData == "true") {
+                                bootbox.alert('删除成功!') ;
+                                $("#deviceTable").bootstrapTable('refresh') ;
+                            } else {
+                                bootbox.alert('删除失败!') ;
+                            }
+                        }
+                    );
+                }
+            }) ;
+
+        }
+    }
+
+
+
+
+    $(function(){
+        $("#deviceTable").bootstrapTable({
+            url : 'http://localhost:8080/device/getByDeviceNameKey' ,
+            method : 'get' ,
+            toolbar : '#toolbar' ,   // 为表格绑定工具栏
+            striped: true,			// 显示为斑马线格式，奇偶行不通背景色
+
+            showRefresh: "true",	// 显示刷新按钮
+            showToggle: "true",		// 显示格式切换按钮
+            showColumns: "true",	// 显示列过滤按钮
+
+
+            // 提交到Server的参数列表 ，
+            // 参数设定相关
+            queryParamsType: "undefined",  // undefined：提交到服务器端的参数自定义
+            queryParams: function(params) {
+                // 参数params中自带 pageSize , pageNumber , sortName , sortOrder
+
+                // 为params对象增加额外三个属性
+                params.devicenameKey = $.trim($("#devicenameKey").val()) ;
+                console.dir(params) ;
+                return params ;
+            },
+            columns : [
+                {checkbox : true} ,   // 显示为复选框
+                {field : 'did' , title : '设备id'} ,
+                {field : 'ddevice' , title : '设备名'} ,
+                {field : 'dprice' , title : '设备价格'} ,
+                {field : 'dnumber' , title : '设备数量'} ,
+                {field : 'dtime' , title : '设备登记日期'} ,
+                {
+                    title : '删除' ,
+                    formatter: operateFormatter,   	// 使用叫做operateFormatter函数来设置该列所显示的内容
+                    events: operateEvents ,			// 设置该列按照class名称加载相应的用户动作，动作描述在window.operateEvents函数中
+                }
+            ] ,
+        });  // End  bootstraptable
+
+
+        // 搜索按钮绑定click事件
+        $("#searchBtn").click(function(){
+            $("#deviceTable").bootstrapTable('refresh') ;
+        }) ;
+        // 工具栏删除按钮动作
+        $("#btn_delete").click(function(){
+            // 获取选中的行——数组
+            var rows = $("#deviceTable").bootstrapTable('getSelections');
+            if(rows.length == 0) {
+                bootbox.alert('请选中要删除的行!') ;
+                return ;
+            }
+            bootbox.confirm("确定要删除 " + rows.length + " 个设备?" , function(result) {
+                if(result) {
+                    // 拼凑上传字符串
+                    str = "" ;
+                    for(i = 0 ; i < rows.length ;i++) {
+                        str += 'dids=' + rows[i].did + "&"
+                    }
+                    str = str.substr(0 , str.length - 1) ;
+                    console.log(str) ;
+                    // ajax 提交到服务器端进行删除,dids=62ef17cc-ac58-11e9-baad-c8d3ff719372&uids=fc34d0bb-aea4-11e9-aa23-0a0027000009
+                    $.post(
+                        'http://localhost:8080/device/deleteMore' ,
+                        str,
+                        function(resData) {
+                            if(resData == "true") {
+                                bootbox.alert('删除成功!') ;
+                                $("#deviceTable").bootstrapTable('refresh') ;
+                            } else {
+                                bootbox.alert('删除失败!') ;
+                            }
+                        }
+                    );
+                }
+            }) ;
+        });
+    })
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <form class="form-inline">
+                <div class="form-group">设备名
+                    <label class="sr-only" for="devicenameKey" ></label>
+                    <input type="text" class="form-control" id="devicenameKey">
+                </div>
+
+                <button type="button" id="searchBtn" class="btn btn-info">搜索</button>
+            </form>
+        </div>
+        <div class="panel-body">
+            <div id="toolbar" class="btn-group">
+
+                <button id="btn_add" type="button" class="btn btn-info" data-toggle="modal" data-target="#addWindow">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增
+                </button>
+
+
+
+                <button id="btn_delete" type="button" class="btn bg-primary">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+                </button>
+            </div>
+            <table id="deviceTable"></table>
+        </div>
+    </div>
+
+    <!-- 编辑-模态框 -->
+    <div class="modal fade" id="editWindow" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">编辑设备信息</h4>
+                </div>
+                <form class="form-horizontal" id="editForm" style="margin: 30px;">
+                    <div class="form-group">
+                        <input type="hidden" id="edit_did" name="did" />
+                        <label
+                                for="edit_ddevice" class="col-md-offset-2 col-md-2 control-label">设备名称</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="ddevice"
+                                   id="edit_ddevice" >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_dnumber"
+                               class="col-md-offset-2 col-md-2 control-label">设备数量</label>
+                        <div class="col-md-6">
+                            <textarea class="form-control" name="dnumber"
+                                      id="edit_dnumber">
+                            </textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_dprice"
+                               class="col-md-offset-2 col-md-2 control-label">设备价格</label>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="dprice"
+                                   id="edit_dprice" >
+                        </div>
+                    </div>
+                    <div class="form-group modal-footer">
+                        <div class="col-md-offset-4 col-md-6">
+                            <span id="returnMessage" class="glyphicon"></span>
+                            <button type="button" id="editSubmitBtn" class="btn btn-info">更新</button>
+                            <button type="reset" id="editResetBtn" class="btn btn-default">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

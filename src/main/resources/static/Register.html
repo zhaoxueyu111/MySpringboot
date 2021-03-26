@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--添加bootstrap的css文件-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <!--添加jQuery文件-->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <!--添加bootstrap的js文件-->
+    <script src="js/bootstrap.js"></script>
+    <!-- 添加bootbox的js文件 -->
+    <script src="js/bootbox.min.js"></script>
+    <title>用户注册</title>
+    <script>
+        $(function(){
+            // 点击id为loginBtn的按钮，提交表单内容
+            $("#regBtn").click(function(){
+                // 以post方式提交表单内容
+                // $.post('url' , 提交数据 , 回调匿名函数);
+                $.post(
+                    'http://localhost:8080/user/adduser' ,
+                    $("#regForm").serialize(),
+                    function(data){
+                        console.log(data) ;
+                        if(data.code != 1) {
+                            bootbox.alert(data.info) ;
+                        } else {
+                            bootbox.alert(data.info + '<a href="Login.html">请登录</a>') ;
+                        }
+                    }
+                );
+            });
+        })
+
+    </script>
+
+</head>
+<body>
+<div class="container" style="background-color: #eee;padding-top: 100px;">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <h3>用户注册</h3>
+            <form class="form-horizontal" id="regForm" >
+                <!--<div class="form-group">
+                    <label for="age" class="col-sm-4 control-label">id</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="id" placeholder="Id" name="id">
+                    </div>
+                </div>-->
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-4 control-label">账号</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputEmail3" placeholder="username" name="username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-4 control-label">密码</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name="userpass">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword4" class="col-sm-4 control-label">确认密码</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" id="inputPassword4" placeholder="Password2" name="userpass2">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-4 control-label">电子邮件</label>
+                    <div class="col-sm-8">
+                        <input type="email" class="form-control" id="email" placeholder="Email" name="email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sex" class="col-sm-4 control-label">性别</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="sex" placeholder="Sex" name="sex">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address" class="col-sm-4 control-label">住址</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="address" placeholder="Address" name="address">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="age" class="col-sm-4 control-label">年龄</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="age" placeholder="Age" name="age">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-10">
+                        <button type="button" class="btn btn-default" id="regBtn">注册</button>
+                        <button type="reset" class="btn btn-danger">取消</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
