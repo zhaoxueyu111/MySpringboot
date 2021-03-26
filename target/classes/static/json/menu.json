@@ -1,0 +1,99 @@
+[
+  {
+    "text": "<span class='glyphicon glyphicon-th-list' /> 资料管理",
+    "backColor": "#428bca",
+    "color": "#ffffff",
+    "selectable": false,
+    "state": {
+      "expanded":true
+    },
+    "nodes": [
+      {
+        "text": "<span class='glyphicon glyphicon-user' /> 用户管理",
+        "href":"pages/UserManager.html"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-user' /> 住户资料管理",
+        "href":"pages/UserManager.html"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-user' /> 住户财产管理",
+        "href":"pages/AssetManager.html"
+      }
+    ]
+  },
+  {
+    "text": "<span class='glyphicon glyphicon-inbox' />  物业管理",
+    "backColor": "#428bca",
+    "color": "#ffffff",
+    "selectable": false,
+    "state": {
+      "expanded":false
+    },
+    "nodes": [
+      {
+        "text": "<span class='glyphicon glyphicon-paperclip' /> 物业设备管理",
+        "href":"pages/DeviceManager.html"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-align-justify' /> 小区仪表数据管理",
+        "href":"pages/MeterManager.html"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-map-marker' /> 小区停车场管理",
+        "href":"pages/CarparkManager.html"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-home' /> 物业费收费管理",
+        "href":"pages/PropertyfeeManager.html"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-education' /> 住户投诉管理",
+        "href":"pages/HousecomplaintsManager.html"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-modal-window' /> 住户设备报修管理",
+        "href":"pages/HouseequipmentrepairManager.html"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-scissors' /> 物业设备维修管理",
+        "href":"pages/PropertyequipmentreapirManager.html"
+      }
+    ]
+  },
+  {
+    "text": "<span class='glyphicon glyphicon-transfer' />  数据统计",
+    "backColor": "#428bca",
+    "color": "#ffffff",
+    "selectable": false,
+    "state": {
+      "expanded":false
+    },
+    "nodes": [
+      {
+        "text": "<span class='glyphicon glyphicon-check' />物业设备统计",
+        "href":"pages/NoticeManager.html"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-check' /> 仪表数据统计",
+        "href":"/trans/finance"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-check' /> 住户投诉统计",
+        "href":"/trans/car"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-check' /> 收费统计",
+        "href":"/trans/car"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-check' /> 住户报修统计",
+        "href":"/trans/car"
+      },
+      {
+        "text": "<span class='glyphicon glyphicon-check' /> 物业维修统计",
+        "href":"/trans/car"
+      }
+    ]
+  }
+]

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"	>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--添加bootstrap的css文件-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <!--添加jQuery文件-->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <!--添加bootstrap的js文件-->
+    <script src="js/bootstrap.js"></script>
+    <!-- 添加bootbox的js文件 -->
+    <script src="js/bootbox.min.js"></script>
+
+    <script src="js/bootstrap-treeview.js"></script>
+
+    <title>Title</title>
+    <script>
+        $(function(){
+            loginStr = localStorage.getItem('loginUser') ;
+            // console.log(loginStr) ;
+            if(null != loginStr && ''!= loginStr) {
+                loginObj = JSON.parse(loginStr) ;   // 把json字符串转换为js对象
+                $("#showlogin").html(loginObj.uname) ;
+            }
+
+            //  使用ajax的get方式请求json/menu.json，使用该文件的数据来填充treeview
+            // $.getJSON('url' , function(data){ data就是json文件内容 }) , 使用ajax的get方式请求json文件
+            $.getJSON('json/menu.json', function (data) {
+                $("#tree").treeview({
+                    data: data,
+                    selectedIcon: "glyphicon glyphicon-menu-right",
+                    selectedBackColor: '#FF7F24',
+                    collapseIcon : '' ,  // 子项展开时去掉前面默认的 + 图标
+                    expandIcon : '' ,    // 子项未展开时去掉前面默认 - 图标
+                    onNodeSelected: function (event, data) {
+                        // 根据当前选中节点的父节点
+                        var parent = $("#tree").treeview("getNode", data.parentId);
+                        $("#breadcrumb").html(
+                            "<li>" + parent.text + "</li>" +
+                            "<li>" + data.text + "</li>");
+                        $("#contentFrame").attr("src", data.href);
+                    }
+                })
+            })
+        })
+    </script>
+
+</head>
+<body>
+<div class="container-fluid">
+    <!-- 上方 -->
+    <div class="row">
+        <div class="col-md-12 page-header">
+            <h1 style="float:left;margin-top: 0;margin-left:50px;">小区物业<small>管理系统</small></h1>
+            <div style="float:right;margin-right: 50px;">
+                <span class="glyphicon glyphicon-time"></span>
+                <span id="showLoginTime">2020-11-20 10:27:22</span>
+                &nbsp;&nbsp;
+                <span class="glyphicon glyphicon-user"></span>
+                欢迎您，<b><span id="showlogin">admin</span></b>
+
+                <button type="button" class="btn btn-default" id="logoutBtn" th:href="@{/user/logout}"><span class="glyphicon glyphicon-off" ></span> 注销</button>
+            </div>
+        </div>
+    </div>
+    <!-- 上方End -->
+    <!-- 下方 -->
+    <div class="row">
+        <div class="col-md-3">
+            <div id="tree"></div>
+        </div>
+        <div class="col-md-9">
+            <!-- 路径导航 -->
+            <ol id="breadcrumb" class="breadcrumb">
+                <li><a href="#">首页</a></li>
+            </ol>
+            <!--内嵌iframe -->
+            <div class="embed-responsive embed-responsive-16by9">
+                <iframe id="contentFrame" class="embed-responsive-item" src="pages/welcome.html"></iframe>
+            </div>
+        </div>
+
+    </div>
+    <!-- 下方End -->
+</div>
+
+</body>
+</html>

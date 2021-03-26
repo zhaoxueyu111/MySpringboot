@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--添加bootstrap的css文件-->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <!--添加jQuery文件-->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <!--添加bootstrap的js文件-->
+    <script src="js/bootstrap.js"></script>
+    <!-- 添加bootbox的js文件 -->
+    <script src="js/bootbox.min.js"></script>
+    <title>用户登录</title>
+    <script>
+        var root = "http://localhost:8080/" ;
+        $(function(){
+            // 点击id为loginBtn的按钮，提交表单内容
+            $("#loginBtn").click(function(){
+                // 以post方式提交表单内容
+                // $.post('url' , 提交数据 , 回调匿名函数);
+                $.post(
+                    root + 'user/logincheck' ,
+                    $("#loginForm").serialize(),
+                    function(resData){
+                        console.log(resData) ;
+                        if(resData == null || resData == '') {
+                            bootbox.alert('账号或者密码错误！登录失败') ;
+                        } else {
+                            bootbox.alert('登录成功！') ;
+                            // 将当前登录用户存储
+                            localStorage.setItem('loginUser' , JSON.stringify(resData)) ;
+                            location.href='index.html' ;
+                        }
+                    }
+                );
+            });
+        })
+
+    </script>
+
+</head>
+<body style="background-image:url('img/bg.jpg')">
+<div class="container" style="padding-top: 170px; padding-left: 50px;">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+
+            <h3 class="text-center">用户登录</h3>
+            <form class="form-horizontal" id="loginForm" >
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">账号</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="inputEmail3" placeholder="username" name="username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name="userpass">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="button" class="btn btn-default" id="loginBtn">登录</button>
+
+                        <button type="reset" class="btn btn-danger">取消</button>
+
+                        <a class='btn btn-primary' href="Register.html">注册用户</a>
+                        <a class='btn btn-primary' href="repass.html">修改密码</a>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
